@@ -20,7 +20,23 @@ export class ProjectController {
 
     // GET - RETURN ALL PROJECTS
     static getAllProjects = async (req: Request, res: Response) => {
-        return res.status(200).send("All Projects");
+        try {
+            const projects = await Project.find({});
+            return res.status(200).json(projects);
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    // GET - RETURN A PROJECT BY ID
+    static getProjectById = async (req: Request, res: Response) => {
+        const id = req.params.id;
+        try {
+            const project = await Project.findById(id);
+            return res.status(200).json(project);
+        } catch (e) {
+            console.log(e)
+        }
     }
 }
 
