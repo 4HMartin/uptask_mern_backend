@@ -9,6 +9,9 @@ connectDB();
 
 const app = express();
 
+// Enable JSON support
+app.use(express.json());
+
 // Routes
 app.use('/api/v1/projects', projectRoutes);
 
