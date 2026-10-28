@@ -11,7 +11,6 @@ router.post('/',
     body("clientName").notEmpty().withMessage("Client name is required"),
     body("description").notEmpty().withMessage("Description is required"),
     handleInputErrors,
-
     ProjectController.createProject
 );
 
@@ -21,8 +20,17 @@ router.get('/:id',
     // Validation
     param("id").isMongoId().withMessage("Project ID is required"),
     handleInputErrors,
-
     ProjectController.getProjectById
+)
+
+router.put('/:id',
+    // Validation
+    param("id").isMongoId().withMessage("Project ID is required"),
+    body("projectName").notEmpty().withMessage("Project name is required"),
+    body("clientName").notEmpty().withMessage("Client name is required"),
+    body("description").notEmpty().withMessage("Description is required"),
+    handleInputErrors,
+    ProjectController.updateProject
 )
 
 export default router;
