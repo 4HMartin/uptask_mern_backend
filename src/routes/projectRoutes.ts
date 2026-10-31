@@ -2,9 +2,11 @@ import { Router } from "express";
 import {ProjectController} from "../controllers/ProjectController";
 import { body, param } from "express-validator";
 import {handleInputErrors} from "../middleware/validation";
+import TaskController from "../controllers/TaskController";
 
 const router = Router();
 
+/** Projects routes */
 router.post('/',
     // Validation
     body("projectName").notEmpty().withMessage("Project name is required"),
@@ -31,6 +33,18 @@ router.put('/:id',
     body("description").notEmpty().withMessage("Description is required"),
     handleInputErrors,
     ProjectController.updateProject
+)
+
+router.delete('/:id',
+    // Validation
+    param("id").isMongoId().withMessage("Project ID is required"),
+    handleInputErrors,
+    ProjectController.deleteProject
+)
+
+/** Tasks routes */
+router.post('/:projectId/tasks',
+    TaskController.createTask
 )
 
 export default router;
