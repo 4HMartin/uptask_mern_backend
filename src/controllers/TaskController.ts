@@ -39,18 +39,7 @@ export class TaskController {
     // GET - GET TASK BY ID
     static getTaskById = async (req: Request, res: Response) => {
         try {
-            const { taskId } = req.params;
-            const task = await Task.findById(taskId);
-            if (!task) {
-                const error = new Error('Task Not Found');
-                res.status(404).send(error.message);
-            }
-            if (task.project.toString() !== req.project._id.toString()) {
-                const error = new Error('Invalid project');
-                res.status(400).send(error.message);
-            }
-
-            return res.status(200).json(task);
+            return res.status(200).json(req.task);
         } catch (e) {
             res.status(500).send(e.message);
         }
@@ -59,21 +48,35 @@ export class TaskController {
     // PUT - UPDATE A TASK
     static updateTask = async (req: Request, res: Response) => {
         try {
-            const { taskId } = req.params;
-            const task = await Task.findByIdAndUpdate(taskId, req.body);
-            if (!task) {
-                const error = new Error('Task Not Found');
-                res.status(404).json(error.message);
-            }
-            if (task.project.toString() !== req.project._id.toString()) {
-                const error = new Error('Invalid project');
-                res.status(400).json(error.message);
-            }
-            task.save()
+            req.task.name = req.body.name;
+            req.task.description = req.body.description;
+            await req.task.save();
+
             res.send("Task updated successfully.");
         } catch (e) {
             res.status(500).send(e.message);
         }
+    }
+
+    // DELETE - DELETE A TASK
+    static deleteTask = async (req: Request, res: Response) => {
+        try {
+            // Remove task from associated array
+            req.project.tasks = req.project.tasks.filter(task => task.toString() !== req.task._id.toString());
+
+            await Promise.allSettled([ req.task.deleteOne(), req.project.save() ])
+            res.send("Task deleted successfully.");
+        } catch (e) {
+            res.status(500).send(e.message);
+        }
+    }
+
+    // POST - UPDATE TASK STATUS
+    static updateStatus = async (req: Request, res: Response) => {
+        const { status } = req.body;
+        req.task.status = status;
+        await req.task.save();
+        res.send("Task updated successfully.");
     }
 }
 export default TaskController;

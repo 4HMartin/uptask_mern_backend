@@ -14,6 +14,7 @@ export interface ITask extends Document {
     name: string;
     description: string;
     project: Types.ObjectId;
+    status: string;
 }
 
 const TaskSchema: Schema = new Schema({
