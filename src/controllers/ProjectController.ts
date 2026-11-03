@@ -32,7 +32,7 @@ export class ProjectController {
     static getProjectById = async (req: Request, res: Response) => {
         const id = req.params.id;
         try {
-            const project = await Project.findById(id);
+            const project = await Project.findById(id).populate('tasks');
             return res.status(200).json(project);
         } catch (e) {
             console.log(e)
